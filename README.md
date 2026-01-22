@@ -1,4 +1,5 @@
 # LyricPost
+Perfected by Ardanikova
 
 > A simple yet powerful Spotify-like lyrics image generator built entirely with vanilla JavaScript.
 
@@ -18,7 +19,7 @@ Users can then select lines from the lyrics and generate a stylish image with cu
 
 ## Live version
 
-You can check it out [here](https://palinkiewicz.github.io/lyricpost/).
+You can check it out [here](https://ardanikov.github.io/lyricpost/).
 
 ## Screenshots
 
@@ -30,7 +31,7 @@ Light mode                         | Dark mode
 
 ## Local installation
 
-1. Clone the repo <br> ```https://github.com/palinkiewicz/lyricpost```
+1. Clone the original repo <br> ```https://github.com/palinkiewicz/lyricpost```, or this repo ```https://github.com/ardanikov/lyricsgenerator```
 2. Run index.html
 
 It's that easy!
