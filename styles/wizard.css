@@ -150,7 +150,7 @@
     width: 100%;
 }
 
-.search-form form > input {
+.search-form form>input {
     padding: 1rem;
     border: none;
     border-radius: 0.5rem;
@@ -159,7 +159,7 @@
     max-width: 25rem;
 }
 
-.search-form form > button {
+.search-form form>button {
     text-align: center;
     padding: 1rem 1.5rem;
     border: none;
@@ -170,12 +170,12 @@
     transition: 200ms var(--cubic-ease-out);
 }
 
-.search-form form > button:hover {
+.search-form form>button:hover {
     cursor: pointer;
     padding: 1rem 3rem;
 }
 
-.search-form form > button:disabled {
+.search-form form>button:disabled {
     font-size: 0;
     padding: 0;
     opacity: 0;
@@ -367,7 +367,7 @@
     padding: 0 1rem;
 }
 
-.color-selection > div {
+.color-selection>div {
     width: 21%;
     aspect-ratio: 1;
     border-radius: 50%;
@@ -375,12 +375,12 @@
     transition: 150ms var(--cubic-ease-out);
 }
 
-.color-selection > div:hover {
+.color-selection>div:hover {
     cursor: pointer;
     scale: 1.1;
 }
 
-.hidden .color-selection > div {
+.hidden .color-selection>div {
     width: 0;
 }
 
@@ -392,14 +392,14 @@
     border: 1px solid var(--background-text-color);
 }
 
-#custom-color > input {
+#custom-color>input {
     height: 0;
     width: 0;
     padding: 0;
     border: none;
 }
 
-#custom-color > label:hover {
+#custom-color>label:hover {
     cursor: pointer;
 }
 
@@ -464,5 +464,60 @@
 @media screen and (max-width: 450px) {
     .select-song {
         width: 45%;
+    }
+}
+
+/* Floating Action Button – "Next" on lyrics screen */
+.fab-next {
+    display: none;
+    position: fixed;
+    bottom: 2rem;
+    right: 1.5rem;
+    z-index: 100;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    border: none;
+    background: var(--primary-color);
+    color: var(--primary-text-color);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: transform 250ms var(--cubic-ease-out),
+        box-shadow 250ms var(--cubic-ease-out),
+        opacity 250ms var(--cubic-ease-out);
+    animation: fab-scale-in 300ms var(--cubic-ease-out) forwards;
+}
+
+.fab-next .material-symbols-outlined {
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.fab-next:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.fab-next:active {
+    transform: scale(0.95);
+}
+
+@keyframes fab-scale-in {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .lyrics-results:not(.hidden) .fab-next {
+        display: flex;
     }
 }

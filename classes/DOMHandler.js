@@ -85,6 +85,8 @@ class DOMHandler {
         this.goToFinal = document.querySelector(
             ".lyrics-image-screen .go-to-screen.right"
         );
+        /** @type {Element} */
+        this.fabNextStep = document.querySelector("#fab-next-step");
 
         /** @type {Element} */
         this.lastGoBack = document.querySelector("#last-go-back");
@@ -159,6 +161,10 @@ class DOMHandler {
         });
 
         this.goToFinal.addEventListener("click", () => {
+            this.displaySongImage();
+        });
+
+        this.fabNextStep.addEventListener("click", () => {
             this.displaySongImage();
         });
 
@@ -474,8 +480,9 @@ class DOMHandler {
                 (selectLine) => Number(selectLine.dataset.index)
             )
         );
+        const savedColor = localStorage.getItem("songImageColor");
         this.setSongImageColor(
-            COLORS[Math.floor(Math.random() * COLORS.length)]
+            savedColor || COLORS[Math.floor(Math.random() * COLORS.length)]
         );
     }
 
@@ -486,6 +493,7 @@ class DOMHandler {
      */
     setSongImageColor(background) {
         this.songImage.style.backgroundColor = background;
+        localStorage.setItem("songImageColor", background);
     }
 
     /**
