@@ -19,7 +19,7 @@ Users can then select lines from the lyrics and generate a stylish image with cu
 
 ## Live version
 
-You can check it out [here](https://ardanikov.github.io/lyricpost/).
+You can check it out [here](https://ardanikov.github.io/lyricsgenerator/).
 
 ## Screenshots
 
