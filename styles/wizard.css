@@ -583,3 +583,38 @@
     background: transparent;
     transition: 200ms var(--cubic-ease-out);
 }
+
+.upload-cover-container {
+    display: flex;
+    align-items: center;
+    max-width: 15rem;
+    width: 80%;
+    padding: 0rem 1rem 1rem;
+    transition: 200ms var(--cubic-ease-out);
+}
+
+.hidden .upload-cover-container {
+    font-size: 0;
+    padding: 0;
+}
+
+#upload-cover-btn {
+    flex: 1;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--background-text-color);
+    border-radius: 0.5rem;
+    outline: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--background-text-color);
+    background: transparent;
+    transition: 200ms var(--cubic-ease-out);
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#upload-cover-btn:hover {
+    background: var(--surface-light-color);
+}

@@ -107,6 +107,10 @@ class DOMHandler {
         /** @type {Element} */
         this.fontLangSelect = document.querySelector("#font-lang");
         /** @type {Element} */
+        this.customCoverInput = document.querySelector("#custom-cover-input");
+        /** @type {Element} */
+        this.uploadCoverBtn = document.querySelector("#upload-cover-btn");
+        /** @type {Element} */
         this.songImage = document.querySelector(".song-image");
 
         /** @type {Element} */
@@ -230,6 +234,21 @@ class DOMHandler {
 
         this.fontLangSelect.addEventListener("change", (e) => {
             document.documentElement.lang = e.target.value;
+        });
+
+        this.uploadCoverBtn.addEventListener("click", () => {
+            this.customCoverInput.click();
+        });
+
+        document.querySelector(".song-image > .header > img").addEventListener("click", () => {
+            this.customCoverInput.click();
+        });
+
+        this.customCoverInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                this.handleCustomCoverUpload(file);
+            }
         });
 
         this.toggleDarkMode.addEventListener("click", () => {
@@ -399,6 +418,7 @@ class DOMHandler {
      */
     async findLyrics() {
         this.lineSelection.innerHTML = "";
+        this.songImage.style.backgroundColor = "";
 
         this.displayScreen(3);
         this.displaySongInfo();
@@ -509,8 +529,11 @@ class DOMHandler {
      * Prepares song image DOM element
      */
     setSongImage() {
+        const song = this.songs[this.selectedSongIndex];
+        const coverUrl = song.customAlbumCoverUrl || song.albumCoverUrl;
+
         this.setBase64Image(
-            this.songs[this.selectedSongIndex].albumCoverUrl,
+            coverUrl,
             ".song-image > .header > img"
         );
         this.setSongInfo();
@@ -519,9 +542,29 @@ class DOMHandler {
                 (selectLine) => Number(selectLine.dataset.index)
             )
         );
-        this.setSongImageColor(
-            COLORS[Math.floor(Math.random() * COLORS.length)]
-        );
+
+        if (!this.songImage.style.backgroundColor) {
+            this.setSongImageColor(
+                COLORS[Math.floor(Math.random() * COLORS.length)]
+            );
+        }
+    }
+
+    /**
+     * Handles custom album cover image upload
+     * @param {File} file
+     */
+    handleCustomCoverUpload(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const base64Data = e.target.result;
+            const song = this.songs[this.selectedSongIndex];
+            if (song) {
+                song.customAlbumCoverUrl = base64Data;
+                this.setSongImage();
+            }
+        };
+        reader.readAsDataURL(file);
     }
 
     /**
@@ -721,50 +764,66 @@ class DOMHandler {
      * @param {string} imgSelector
      */
     async setBase64Image(url, imgSelector, newColor = null) {
-        const response = await fetch(url);
-        const blob = await response.blob();
-
-        const base64 = await new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-        });
-
-        if (newColor === null)
-            return document
-                .querySelector(imgSelector)
-                .setAttribute("src", base64);
-
-        const img = new Image();
-        img.src = base64;
-
-        img.onload = () => {
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-
-            const imageData = ctx.getImageData(
-                0,
-                0,
-                canvas.width,
-                canvas.height
-            );
-            const data = imageData.data;
-
-            for (let i = 0; i < data.length; i += 4) {
-                if (data[i + 3] > 0) {
-                    data[i] = data[i + 1] = data[i + 2] = newColor; // Set RGB (0 = black, 255 = white)
-                }
+        try {
+            if (!url) {
+                throw new Error("No URL provided");
             }
 
-            ctx.putImageData(imageData, 0, 0);
+            let base64;
+            if (url.startsWith("data:")) {
+                base64 = url;
+            } else {
+                const response = await fetch(url);
+                const blob = await response.blob();
+
+                base64 = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            }
+
+            if (newColor === null)
+                return document
+                    .querySelector(imgSelector)
+                    .setAttribute("src", base64);
+
+            const img = new Image();
+            img.src = base64;
+
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                ctx.drawImage(img, 0, 0);
+
+                const imageData = ctx.getImageData(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+                const data = imageData.data;
+
+                for (let i = 0; i < data.length; i += 4) {
+                    if (data[i + 3] > 0) {
+                        data[i] = data[i + 1] = data[i + 2] = newColor; // Set RGB (0 = black, 255 = white)
+                    }
+                }
+
+                ctx.putImageData(imageData, 0, 0);
+                document
+                    .querySelector(imgSelector)
+                    .setAttribute("src", canvas.toDataURL());
+            };
+        } catch (error) {
+            console.error("Failed to set base64 image:", error);
             document
                 .querySelector(imgSelector)
-                .setAttribute("src", canvas.toDataURL());
-        };
+                .setAttribute("src", "https://lastfm.freetls.fastly.net/i/u/174s/2a96cbd8b46e442fc41c2b86b821562f.png");
+        }
     }
 
     /**
